@@ -5,7 +5,7 @@ from fyers_apiv3 import fyersModel
 
 # 1. App Page Settings
 st.set_page_config(page_title="Ultimate 7989 RRG", page_icon="📈", layout="wide")
-st.title("📊 Ultimate 7989 RRG Dashboard (Fyers Live)")
+st.title("📊 Ultimate RRG Dashboard (Fyers Live)")
 st.markdown("Live RRG & ROC Momentum Dashboard for NSE Sectors - Direct Broker Data")
 
 # ==========================================
