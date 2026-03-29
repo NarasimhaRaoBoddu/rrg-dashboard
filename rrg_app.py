@@ -2,39 +2,39 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 
-# 1. యాప్ పేజీ సెట్టింగ్స్
+# 1. App Page Settings
 st.set_page_config(page_title="Ultimate 7989 RRG", page_icon="📈", layout="wide")
 st.title("📊 Ultimate 7989 RRG Dashboard")
-st.markdown("నిఫ్టీ 14 సెక్టార్ల లైవ్ రొటేషన్ (RRG) & మొమెంటం (ROC) డాష్‌బోర్డ్")
+st.markdown("Live RRG (Relative Rotation Graph) & ROC Momentum Dashboard for NSE Sectors")
 
-# సెక్టార్ల లిస్ట్ (Yahoo Finance Symbols)
+# 2. Sector List (Working Yahoo Finance Symbols only)
 sectors = {
     'NIFTY 50': '^NSEI', 'BANK': '^NSEBANK', 'IT': '^CNXIT', 'AUTO': '^CNXAUTO',
     'METAL': '^CNXMETAL', 'FMCG': '^CNXFMCG', 'PHARMA': '^CNXPHARMA', 
     'ENERGY': '^CNXENERGY', 'REALTY': '^CNXREALTY', 'MEDIA': '^CNXMEDIA', 
-    'INFRA': '^CNXINFRA', 'PSE': '^CNXPSE', 'FINSRV': 'NIFTY_FIN_SERVICE.NS'
+    'INFRA': '^CNXINFRA', 'PSE': '^CNXPSE'
 }
 
-# 2. డేటా డౌన్‌లోడ్ ఫంక్షన్ (యాప్ ఫాస్ట్ గా ఉండటానికి Cache వాడుతున్నాం)
-@st.cache_data(ttl=300) # ప్రతి 5 నిమిషాలకు ఒకసారి మాత్రమే డేటా లాగుతుంది
+# 3. Data Download Function (Cached for performance)
+@st.cache_data(ttl=300) # Fetches new data every 5 minutes
 def load_data():
     tickers = list(sectors.values())
     data = yf.download(tickers, period="3mo", interval="1d", progress=False)['Close']
     return data
 
 try:
-    with st.spinner('మార్కెట్ లైవ్ డేటాని స్కాన్ చేస్తున్నాను... ⏳'):
+    with st.spinner('Scanning live market data... ⏳'):
         data = load_data()
 
     rrg_len = 20
     roc_lookback = 20
     results = []
 
-    # బేంచ్‌మార్క్ (Nifty) లెక్కలు
+    # Benchmark (Nifty) Calculations
     nifty_close = data[sectors['NIFTY 50']].squeeze()
     bench_roc = ((nifty_close.iloc[-1] - nifty_close.iloc[-roc_lookback-1]) / nifty_close.iloc[-roc_lookback-1]) * 100
 
-    # 3. అన్ని సెక్టార్ల గణాంకాలు క్యాలిక్యులేట్ చేయడం
+    # 4. Calculate Stats for All Sectors
     for name, sym in sectors.items():
         if name == 'NIFTY 50': continue
         
@@ -59,7 +59,7 @@ try:
         cur_roc = round(float(sec_roc), 2)
         vs_nifty = round(float(vs_nifty), 2)
         
-        # Phase కనుక్కోవడం
+        # Phase Identification
         if cur_ratio >= 100 and cur_mom >= 100: phase = "LEADING"
         elif cur_ratio >= 100 and cur_mom < 100: phase = "WEAKENING"
         elif cur_ratio < 100 and cur_mom < 100: phase = "LAGGING"
@@ -70,12 +70,12 @@ try:
             'RS-Mom': cur_mom, '% Chg (ROC)': cur_roc, 'vs Nifty': vs_nifty
         })
 
-    # 4. డేటాని టేబుల్ లాగా మార్చడం & స్కోర్ ప్రకారం సార్ట్ చేయడం
+    # 5. DataFrame Formatting & Sorting by Score
     df = pd.DataFrame(results)
     df['Score'] = df['RS-Ratio'] + df['RS-Mom'] + df['% Chg (ROC)']
     df = df.sort_values(by='Score', ascending=False).drop(columns=['Score']).reset_index(drop=True)
 
-    # 5. టేబుల్ కి రంగులు అద్దడం (యాప్ లో అందంగా కనిపించడానికి)
+    # 6. Styling Functions
     def highlight_phase(val):
         color = '#00ff00' if val == 'LEADING' else '#ff9900' if val == 'WEAKENING' else '#ff0000' if val == 'LAGGING' else '#00ccff'
         return f'background-color: {color}; color: black; font-weight: bold;'
@@ -84,16 +84,20 @@ try:
         color = 'green' if val > 0 else 'red'
         return f'color: {color}; font-weight: bold;'
 
-    styled_df = df.style.applymap(highlight_phase, subset=['Phase']) \
-                        .applymap(color_roc, subset=['% Chg (ROC)', 'vs Nifty'])
+    # Apply styling
+    styled_df = df.style.map(highlight_phase, subset=['Phase']) \
+                        .map(color_roc, subset=['% Chg (ROC)', 'vs Nifty'])
 
-    # డాష్‌బోర్డ్ ప్రదర్శన
-    st.markdown(f"**NIFTY 50 ప్రస్తుత ROC:** `{bench_roc:.2f}%`")
+    # Dashboard Display
+    st.markdown(f"**NIFTY 50 Current ROC:** `{bench_roc:.2f}%`")
     st.dataframe(styled_df, use_container_width=True, height=500)
 
-    # నంబర్ 1 సెక్టార్ ని హైలైట్ చేయడం
+    # Highlight Top Sector
     top_sector = df.iloc[0]
-    st.success(f"🚀 **అలెర్ట్:** ప్రస్తుతం **{top_sector['Sector']}** సెక్టార్ {top_sector['Phase']} దశలో ఉండి మార్కెట్ ని లీడ్ చేస్తోంది!")
+    st.success(f"🚀 **ALERT:** The **{top_sector['Sector']}** sector is currently in the **{top_sector['Phase']}** phase and is leading the market!")
+
+except Exception as e:
+    st.error(f"Error fetching data: {e}")
 
 except Exception as e:
     st.error(f"డేటా లాగడంలో ఎర్రర్ వచ్చింది: {e}")
