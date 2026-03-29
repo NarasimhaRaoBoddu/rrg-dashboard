@@ -7,7 +7,7 @@ from fyers_apiv3 import fyersModel
 # 1. APP SETTINGS & FYERS LOGIN
 # ==========================================
 st.set_page_config(page_title="Ultimate 7989 RRG & Algo", page_icon="📈", layout="wide")
-st.title("📊 Ultimate 7989 RRG Dashboard + Pro Algo Bot")
+st.title("📊 Ultimate RRG Dashboard + Pro Algo Bot")
 st.markdown("Live Sector Rotation & Automated Order Execution System - Direct Broker Data")
 
 # మీ డీటెయిల్స్ ఇక్కడ పేస్ట్ చేయండి
@@ -179,7 +179,20 @@ with tab2:
         st.session_state.entry_price = 0.0
 
     col1, col2, col3, col4 = st.columns(4)
-    trade_symbol = col1.text_input("ట్రేడ్ సింబల్:", "NSE:SBIN-EQ")
+# యూజర్ కి ఈజీగా ఉండటానికి సెర్చ్ చేసుకునే లిస్ట్ (Selectbox)
+popular_symbols = [
+    "NSE:NIFTY50-INDEX", "NSE:NIFTYBANK-INDEX", "NSE:FINNIFTY-INDEX",
+    "NSE:SBIN-EQ", "NSE:RELIANCE-EQ", "NSE:HDFCBANK-EQ", "NSE:ICICIBANK-EQ",
+    "NSE:TCS-EQ", "NSE:INFY-EQ", "NSE:TATAMOTORS-EQ"
+]
+
+symbol_type = col1.radio("ఎలా ఇస్తారు?", ["లిస్ట్ నుండి సెర్చ్", "మాన్యువల్ గా టైప్"])
+
+if symbol_type == "లిస్ట్ నుండి సెర్చ్":
+    trade_symbol = col1.selectbox("సింబల్ వెతకండి:", popular_symbols)
+else:
+    trade_symbol = col1.text_input("సింబల్ టైప్ చేయండి:", "NSE:NIFTY24MAR22500CE")
+    col1.caption("ఉదా: NSE:SBIN-EQ లేదా ఆప్షన్స్ (NSE:NIFTY24MAR22500CE)")
     trade_qty = col2.number_input("క్వాంటిటీ:", min_value=1, value=1)
     sl_pts = col3.number_input("Stop Loss (Points):", min_value=1, value=10)
     tp_pts = col4.number_input("Target (Points):", min_value=1, value=20)
