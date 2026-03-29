@@ -12,7 +12,7 @@ sectors = {
     'NIFTY 50': '^NSEI', 'BANK': '^NSEBANK', 'IT': '^CNXIT', 'AUTO': '^CNXAUTO',
     'METAL': '^CNXMETAL', 'FMCG': '^CNXFMCG', 'PHARMA': '^CNXPHARMA', 
     'ENERGY': '^CNXENERGY', 'REALTY': '^CNXREALTY', 'MEDIA': '^CNXMEDIA', 
-    'INFRA': '^CNXINFRA', 'PSE': '^CNXPSE', 'FINSRV': 'NIFTY_FIN_SERVICE'
+    'INFRA': '^CNXINFRA', 'PSE': '^CNXPSE', 'FINSRV': 'NIFTYFINSERVICE'
 }
 
 # 2. డేటా డౌన్‌లోడ్ ఫంక్షన్ (యాప్ ఫాస్ట్ గా ఉండటానికి Cache వాడుతున్నాం)
