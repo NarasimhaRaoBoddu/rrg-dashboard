@@ -7,7 +7,7 @@ from fyers_apiv3 import fyersModel
 # ==========================================
 # 1. APP SETTINGS & FYERS LOGIN
 # ==========================================
-st.set_page_config(page_title="Ultimate 7989 Live Terminal", page_icon="⚡", layout="wide")
+st.set_page_config(page_title="Ultimate Live Terminal", page_icon="⚡", layout="wide")
 st.title("⚡ Ultimate 7989 Live Trading Terminal")
 st.markdown("RRG Rotation | Live Charts | Auto-Bot Execution - Direct Fyers API")
 
