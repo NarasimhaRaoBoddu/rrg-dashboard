@@ -13,7 +13,7 @@ st.markdown("RRG Rotation | Live Charts | Auto-Bot Execution - Direct Fyers API"
 
 # మీ డీటెయిల్స్ ఇక్కడ పేస్ట్ చేయండి
 CLIENT_ID = "YOUR_APP_ID_HERE"      
-ACCESS_TOKEN = "YOUR_TOKEN_HERE"    
+ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCcHlQUlhBTUpsRXduZERZczBjWGJmT0MwRXN4X3ZDaHVfdThPQnlVcFJFbTdJNU5tQXdiZjdVSFFNdVM1cTBzU1hsZkpzVWd0V0R3eENsemEtSzJKRnBrV19LbE5KX1lobVNCbTJWZEItdERPTzJ4TT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiIxOTk3NWUyOGVlZjQ0YWM4YzE3NGE3MjQyYjgzNjlhMWM4YzE0ZGVkMWRiMjFkYTNlOGI4M2U0MSIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWU4xMTU5MSIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzc0ODMwNjAwLCJpYXQiOjE3NzQ3Nzc0MzEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc3NDc3NzQzMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.cwiru3JptArYldschrXS0QuskKKvpMMjxVj94wkTmgI"    
 
 try:
     fyers = fyersModel.FyersModel(client_id=CLIENT_ID, is_async=False, token=ACCESS_TOKEN, log_path="")
