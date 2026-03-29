@@ -2,3 +2,4 @@ streamlit
 pandas
 fyers-apiv3
 pandas_ta
+plotly
