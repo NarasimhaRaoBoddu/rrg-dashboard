@@ -9,10 +9,10 @@ st.title("📊 Ultimate 7989 RRG Dashboard (Fyers Live)")
 st.markdown("Live RRG & ROC Momentum Dashboard for NSE Sectors - Direct Broker Data")
 
 # ==========================================
-# 2. FYERS CREDENTIALS (ఇక్కడ మీ డీటెయిల్స్ ఇవ్వండి)
+# 2. FYERS CREDENTIALS (PASTE YOUR DETAILS HERE)
 # ==========================================
-CLIENT_ID = "YOUR_APP_ID_HERE"      # ఉదా: "QHIBBNGEQE-100"
-ACCESS_TOKEN = "YOUR_TOKEN_HERE"    # ఇందాక వచ్చిన పెద్ద టోకెన్
+CLIENT_ID = "YOUR_APP_ID_HERE"      # Example: "QHIBBNGEQE-100"
+ACCESS_TOKEN = "YOUR_TOKEN_HERE"    # The huge token you generated
 
 # Initialize Fyers API
 try:
@@ -20,25 +20,27 @@ try:
 except Exception as e:
     st.error(f"Fyers Login Error: {e}")
 
-# 3. Sector List (Fyers Symbols)
+# 3. Sector List (Correct Fyers Symbols with Spaces)
 sectors = {
-    'NIFTY 50': 'NSE:NIFTY50-INDEX', 'BANK': 'NSE:NIFTYBANK-INDEX', 
-    'IT': 'NSE:NIFTYIT-INDEX', 'AUTO': 'NSE:NIFTYAUTO-INDEX',
-    'METAL': 'NSE:NIFTYMETAL-INDEX', 'FMCG': 'NSE:NIFTYFMCG-INDEX', 
-    'PHARMA': 'NSE:NIFTYPHARMA-INDEX', 'ENERGY': 'NSE:NIFTYENERGY-INDEX', 
-    'REALTY': 'NSE:NIFTYREALTY-INDEX', 'MEDIA': 'NSE:NIFTYMEDIA-INDEX', 
-    'INFRA': 'NSE:NIFTYINFRA-INDEX', 'PSE': 'NSE:NIFTYPSE-INDEX'
+    'NIFTY 50': 'NSE:NIFTY 50-INDEX', 'BANK': 'NSE:NIFTY BANK-INDEX', 
+    'IT': 'NSE:NIFTY IT-INDEX', 'AUTO': 'NSE:NIFTY AUTO-INDEX',
+    'METAL': 'NSE:NIFTY METAL-INDEX', 'FMCG': 'NSE:NIFTY FMCG-INDEX', 
+    'PHARMA': 'NSE:NIFTY PHARMA-INDEX', 'ENERGY': 'NSE:NIFTY ENERGY-INDEX', 
+    'REALTY': 'NSE:NIFTY REALTY-INDEX', 'MEDIA': 'NSE:NIFTY MEDIA-INDEX', 
+    'INFRA': 'NSE:NIFTY INFRA-INDEX', 'PSE': 'NSE:NIFTY PSE-INDEX'
 }
 
-# 4. Data Fetching Function
-@st.cache_data(ttl=60) # ప్రతి 1 నిమిషానికి ఒకసారి లైవ్ డేటా రిఫ్రెష్ అవుతుంది
+# 4. Data Fetching Function with Error Catcher
+@st.cache_data(ttl=60)
 def load_fyers_data():
     end_date = datetime.date.today()
-    start_date = end_date - datetime.timedelta(days=100) # పాత డేటా కోసం
+    start_date = end_date - datetime.timedelta(days=100)
     
     df_dict = {}
+    error_msg = None
+    
     for name, sym in sectors.items():
-        data = {
+        payload = {
             "symbol": sym,
             "resolution": "1D",
             "date_format": "1",
@@ -46,20 +48,26 @@ def load_fyers_data():
             "range_to": end_date.strftime("%Y-%m-%d"),
             "cont_flag": "1"
         }
-        res = fyers.history(data=data)
-        if res['s'] == 'ok':
-            # Fyers క్యాండిల్ డేటా ఫార్మాట్: [Epoch, Open, High, Low, Close, Volume]
+        res = fyers.history(data=payload)
+        
+        if res.get('s') == 'ok':
             closes = [candle[4] for candle in res['candles']]
             df_dict[name] = pd.Series(closes)
+        else:
+            error_msg = f"Error for {sym}: {res}"
+            break # Stop loop if there's an error
             
-    return pd.DataFrame(df_dict)
+    return pd.DataFrame(df_dict), error_msg
 
 try:
     with st.spinner('Fetching lightning fast data from Fyers... ⚡'):
-        data = load_fyers_data()
+        data, api_error = load_fyers_data()
 
-    if data.empty:
-        st.error("No data received. Please check your App ID and Token.")
+    if api_error:
+        st.error(f"🔴 FYERS SERVER ERROR: {api_error}")
+        st.info("Please check if your Token is correct. Remember: Tokens expire every night at 12 AM. You might need to generate a new one using get_token.py")
+    elif data.empty:
+        st.error("No data received. DataFrame is empty.")
     else:
         rrg_len = 20
         roc_lookback = 20
