@@ -1,5 +1,5 @@
 streamlit
 pandas
-fyers-apiv3
+dhanhq
 pandas_ta
 plotly
