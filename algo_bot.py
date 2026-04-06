@@ -203,9 +203,11 @@ with tab3:
                     st.session_state.entry_price = 0.0
                     st.error("🛑 ట్రేడ్ క్లోజ్ చేసాం (ఎగ్జిట్)!")
 
-    with stat_col:
+with stat_col:
         st.subheader("Bot Status")
         if st.session_state.in_position:
             st.info("🟢 **Active Trade Running...**")
-            st.write(f"**Security ID:** {trade_sec_id}")
-            st.write(f"**SL:** {st.session_state.entry_price - sl_pts} | **Target:** {st.session_state.entry
+            st.write(f"**Security ID:** {trade_sec_id}") # (Fyers అయితే trade_symbol అని ఉంటుంది)
+            st.write(f"**SL:** {st.session_state.entry_price - sl_pts} | **Target:** {st.session_state.entry_price + tp_pts}")
+        else:
+            st.warning("🟡 బొట్ స్లీప్ మోడ్‌లో ఉంది. రెడీ గా ఉండండి.")
