@@ -13,7 +13,7 @@ st.markdown("Stock Rotation | Live Charts | Fastest Auto-Bot Execution - Dhan AP
 
 # 🔒 సెక్యూరిటీ కోసం కీస్ ని secrets నుండి లాగుతున్నాం
 try:
-    CLIENT_ID = st.secrets["1107265920"]
+    CLIENT_ID = st.secrets[DHAN_CLIENT_ID]
     ACCESS_TOKEN = st.secrets["eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJkaGFuIiwicGFydG5lcklkIjoiIiwiZXhwIjoxNzc1NTgzOTg3LCJpYXQiOjE3NzU0OTc1ODcsInRva2VuQ29uc3VtZXJUeXBlIjoiU0VMRiIsIndlYmhvb2tVcmwiOiIiLCJkaGFuQ2xpZW50SWQiOiIxMTA3MjY1OTIwIn0.q1Mv45QchrzXLELZB1XSKsWlG8Kpdh4iBVabMsMjrgfGl2sOYk3jO9eZMJgpEooU1xAXf-b4ef57lAah5ul0_g"]
     
     # Dhan కి కనెక్ట్ అవ్వడం
